@@ -1,0 +1,17 @@
+{
+    "development": {
+        "winston": {
+            "level": "silly"
+        }
+    },
+    "homolog": {
+        "winston": {
+            "level": "silly"
+        }
+    },
+    "production": {
+        "winston": {
+            "level": "info"
+        }
+    }
+}
