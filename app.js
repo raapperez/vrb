@@ -32,6 +32,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 const indexRoute = require('./routes/index');
 app.use('/', indexRoute)
 
+const propertiesRoute = require('./routes/properties');
+app.use('/properties', propertiesRoute);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
