@@ -118,7 +118,7 @@ describe('vrb api', () => {
 
             it('Should get only Gode and Ruja properties', () => {
                 const promise = rp.get({
-                    uri: `${host}/properties?ax=399&ay=1000&bx=599&by=500`,
+                    uri: `${host}/properties?ax=399&ay=1000&bx=599&by=501`,
                     json: true
                 });
 
@@ -139,6 +139,158 @@ describe('vrb api', () => {
                         property.provinces.should.contains('Gode');
                         property.provinces.should.contains('Ruja');
                     });
+                });
+            });
+
+            it('Should get only Ruja properties', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=601&ay=1000&bx=1099&by=501`,
+                    json: true
+                });
+
+                return promise.then(response => {
+                    response.foundProperties.should.be.equal(response.properties.length);
+                    response.properties.forEach(property => {
+                        property.id.should.be.a('number');
+                        property.title.should.be.a('string');
+                        property.price.should.be.a('number');
+                        property.description.should.be.a('string');
+                        property.x.should.be.a('number');
+                        property.y.should.be.a('number');
+                        property.beds.should.be.a('number');
+                        property.baths.should.be.a('number');
+                        property.provinces.should.be.a('array');
+                        property.squareMeters.should.be.a('number');
+
+                        property.provinces.should.have.length(1);
+                        property.provinces[0].should.be.equal('Ruja');
+                    });
+                });
+            });
+
+            it('Should get only Jaby properties', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=1101&ay=1000&bx=1400&by=501`,
+                    json: true
+                });
+
+                return promise.then(response => {
+                    response.foundProperties.should.be.equal(response.properties.length);
+                    response.properties.forEach(property => {
+                        property.id.should.be.a('number');
+                        property.title.should.be.a('string');
+                        property.price.should.be.a('number');
+                        property.description.should.be.a('string');
+                        property.x.should.be.a('number');
+                        property.y.should.be.a('number');
+                        property.beds.should.be.a('number');
+                        property.baths.should.be.a('number');
+                        property.provinces.should.be.a('array');
+                        property.squareMeters.should.be.a('number');
+
+                        property.provinces.should.have.length(1);
+                        property.provinces[0].should.be.equal('Jaby');
+                    });
+                });
+            });
+
+            it('Should get only Scavy properties', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=0&ay=499&bx=599&by=0`,
+                    json: true
+                });
+
+                return promise.then(response => {
+                    response.foundProperties.should.be.equal(response.properties.length);
+                    response.properties.forEach(property => {
+                        property.id.should.be.a('number');
+                        property.title.should.be.a('string');
+                        property.price.should.be.a('number');
+                        property.description.should.be.a('string');
+                        property.x.should.be.a('number');
+                        property.y.should.be.a('number');
+                        property.beds.should.be.a('number');
+                        property.baths.should.be.a('number');
+                        property.provinces.should.be.a('array');
+                        property.squareMeters.should.be.a('number');
+
+                        property.provinces.should.have.length(1);
+                        property.provinces[0].should.be.equal('Scavy');
+                    });
+                });
+            });
+
+            it('Should get only Groola properties', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=601&ay=499&bx=799&by=0`,
+                    json: true
+                });
+
+                return promise.then(response => {
+                    response.foundProperties.should.be.equal(response.properties.length);
+                    response.properties.forEach(property => {
+                        property.id.should.be.a('number');
+                        property.title.should.be.a('string');
+                        property.price.should.be.a('number');
+                        property.description.should.be.a('string');
+                        property.x.should.be.a('number');
+                        property.y.should.be.a('number');
+                        property.beds.should.be.a('number');
+                        property.baths.should.be.a('number');
+                        property.provinces.should.be.a('array');
+                        property.squareMeters.should.be.a('number');
+
+                        property.provinces.should.have.length(1);
+                        property.provinces[0].should.be.equal('Groola');
+                    });
+                });
+            });
+
+            it('Should get only Nova properties', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=801&ay=499&bx=1400&by=0`,
+                    json: true
+                });
+
+                return promise.then(response => {
+                    response.foundProperties.should.be.equal(response.properties.length);
+                    response.properties.forEach(property => {
+                        property.id.should.be.a('number');
+                        property.title.should.be.a('string');
+                        property.price.should.be.a('number');
+                        property.description.should.be.a('string');
+                        property.x.should.be.a('number');
+                        property.y.should.be.a('number');
+                        property.beds.should.be.a('number');
+                        property.baths.should.be.a('number');
+                        property.provinces.should.be.a('array');
+                        property.squareMeters.should.be.a('number');
+
+                        property.provinces.should.have.length(1);
+                        property.provinces[0].should.be.equal('Nova');
+                    });
+                });
+            });
+
+            it('Should receive 400 error if invalid area', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=200&ay=499&bx=1500&by=0`,
+                    json: true
+                });
+                
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should receive 400 error if missing params', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties?ax=200&bx=1500`,
+                    json: true
+                });
+                
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
                 });
             });
 
