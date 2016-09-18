@@ -15,32 +15,30 @@ class MemoryDB {
     }
 
     getProperty(id) {
-        const property = property.find(property => property.id === id); 
+        const property = properties.find(property => property.id === id); 
         return Promise.resolve(property);
     }
 
     getProprtiesInBox(ax, ay, bx, by) {
-        const properties = properties.filter(property => {
-            const x = property.long;
-            const y = property.lat;
-
+        const filteredProperties = properties.filter(property => {
+            const {x, y} = property;
             return x >= ax && x <= bx && y <= ay && y >= by;
         });
-
-        return Promise.resolve(properties);
+        
+        return Promise.resolve(filteredProperties);
     }
 
     getProvinces() {
-        const provinces = _.map(provinces, (value, key) => {
+        const fixedProvinces = _.map(provinces, (value, key) => {
             return Object.assign({
                 name: key
             }, value);
         });
 
-        return Promise.resolve(provinces);
+        return Promise.resolve(fixedProvinces);
     }
     
 }
 
 
-module.exports = MemoryDB;
+module.exports = new MemoryDB();

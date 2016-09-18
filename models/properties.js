@@ -5,27 +5,25 @@ const _ = require('lodash');
 const provincesModel = require('./provinces');
 
 const isInvalid = property => {
-    const x = property.long;
-    const y = property.lat;
-    const {beds, baths, area} = property;
+    const {x, y, beds, baths, area} = property;
 
-    if(!_.isInteger(x)  || x < 0 || x > 1400) {
-        return 'Wrong longitude value';
+    if (!_.isInteger(x) || x < 0 || x > 1400) {
+        return 'Wrong x value';
     }
 
-    if(!_.isInteger(y)  || y < 0 || y > 1000) {
-        return 'Wrong latitude value';
+    if (!_.isInteger(y) || y < 0 || y > 1000) {
+        return 'Wrong y value';
     }
 
-    if(!_.isInteger(beds) || beds < 1 || beds > 5) {
+    if (!_.isInteger(beds) || beds < 1 || beds > 5) {
         return 'Wrong beds value';
     }
 
-    if(!_.isInteger(baths) || baths < 1 || baths > 4) {
+    if (!_.isInteger(baths) || baths < 1 || baths > 4) {
         return 'Wrong baths value';
     }
 
-    if(!_.isInteger(area) || area < 20 || area > 240) {
+    if (!_.isInteger(area) || area < 20 || area > 240) {
         return 'Wrong area value';
     }
 
@@ -34,12 +32,14 @@ const isInvalid = property => {
 
 const get = id => {
     return db.getProperty(id).then(property => {
-        if(!property) {
+        if (!property) {
             return null;
         }
 
-        property.provinces = provincesModel.getLocationProvinces(property.long, property.lat);
-        return property;
+        return provincesModel.getLocationProvinces(property.x, property.y).then(provinces => {
+            property.provinces = provinces.map(province => province.name);
+            return property;
+        });
     });
 };
 
@@ -48,11 +48,16 @@ const create = property => {
 };
 
 const list = (ax, ay, bx, by) => {
-    return db.getProprtiesInBox(ax, ay, bx, by).map(property => {
-        property.provinces = provincesModel.getLocationProvinces(property.long, property.lat);
-        return property;
-    });
+    return db.getProprtiesInBox(ax, ay, bx, by).then(properties => {
 
+        return Promise.all(properties.map(property => {
+            return provincesModel.getLocationProvinces(property.x, property.y).then(provinces => {
+                property.provinces = provinces.map(province => province.name);
+                return property;
+            });
+        })).then(() => properties);
+
+    });
 };
 
 

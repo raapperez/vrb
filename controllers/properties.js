@@ -23,12 +23,13 @@ module.exports.create = (req, res, next) => {
 
 module.exports.get = (req, res, next) => {
 
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
 
     propertiesModel.get(id).then(property => {
        
         if(!property) {
             res.status(404).end();
+            return;
         }
 
         res.status(200).json(property);
@@ -40,10 +41,22 @@ module.exports.get = (req, res, next) => {
 
 module.exports.list = (req, res, next) => {
 
-    const {ax, ay, bx, by} = req.query;
+    let {ax, ay, bx, by} = req.query;
 
-    if(typeof ax === undefined || typeof ay === undefined || typeof bx === undefined || typeof by === undefined) {
+    if(typeof ax === 'undefined' || typeof ay === 'undefined' || typeof bx === 'undefined' || typeof by === 'undefined') {
         const error = new Error('This method requires query params ax, ay, bx and by');
+        error.status = 400;
+        next(error);
+        return;
+    }
+
+    ax = parseInt(ax);
+    ay = parseInt(ay);
+    bx = parseInt(bx);
+    by = parseInt(by);
+
+    if(ax > bx || ay < by) {
+        const error = new Error('The query param "bx" must be greater or equal "ax" and "ay" must be greater or equal "by"');
         error.status = 400;
         next(error);
         return;
