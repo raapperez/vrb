@@ -8,14 +8,14 @@ const _ = require('lodash');
 
 chai.use(chaiAsPromised);
 
-const host = 'http://localhost:3001';
+const host = 'http://localhost:3001/v1';
 
 let createdProperty;
 
 describe('vrb api', () => {
     before(() => {
 
-        return rp.get({ uri: `${host}/health`, json: true }).then(({status}) => {
+        return rp.get({ uri: `${host.replace(/\/v[0-9]*/,'')}/health`, json: true }).then(({status}) => {
             if (status !== 'UP') {
                 return Promise.reject();
             }

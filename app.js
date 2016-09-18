@@ -33,11 +33,12 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP' });
 });
 
-const indexRoute = require('./routes/index');
-app.use('/', indexRoute);
-
 const propertiesRoute = require('./routes/properties');
-app.use('/properties', propertiesRoute);
+app.use('/v1/properties', propertiesRoute);
+
+app.get('/', (req, res) => {
+  res.redirect(301, '/docs/v1/index.html');
+});
 
 
 // catch 404 and forward to error handler

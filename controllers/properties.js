@@ -63,6 +63,13 @@ module.exports.list = (req, res, next) => {
     bx = parseInt(bx);
     by = parseInt(by);
 
+    if(!_.isInteger(ax) || !_.isInteger(ay) || !_.isInteger(bx) || !_.isInteger(by)) {
+        const error = new Error('This method requires integer query params ax, ay, bx and by');
+        error.status = 400;
+        next(error);
+        return;
+    }
+
     if(ax > bx || ay < by) {
         const error = new Error('The query param "bx" must be greater or equal "ax" and "ay" must be greater or equal "by"');
         error.status = 400;

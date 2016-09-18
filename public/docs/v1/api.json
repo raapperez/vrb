@@ -1,0 +1,226 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This API is for creating and getting properties in Spotippos",
+        "version": "1.0.0",
+        "title": "Viva Real Backend API"
+    },
+    "host": "localhost:3001",
+    "basePath": "/v1",
+    "tags": [],
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/properties": {
+            "post": {
+                "tags": [
+                    "property"
+                ],
+                "summary": "Create a new property",
+                "description": "",
+                "operationId": "createProperty",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Property object that will be created",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PostProperty"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "property"
+                ],
+                "summary": "List properties in a area",
+                "description": "",
+                "operationId": "listProperty",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ax",
+                        "description": "Upper left x value",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ay",
+                        "description": "Upper left y value",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "bx",
+                        "description": "Bottom right x value",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "by",
+                        "description": "Bottom right y value",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/properties/{propetyId}": {
+            "get": {
+                "tags": [
+                    "property"
+                ],
+                "summary": "Find property by Id",
+                "description": "Returns a single propety",
+                "operationId": "getProperty",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "propetyId",
+                        "in": "path",
+                        "description": "Id of property to return",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Property"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Property": {
+            "type": "object",
+            "required": [
+                "title",
+                "description",
+                "price",
+                "x",
+                "y",
+                "beds",
+                "baths",
+                "squareMeters"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                },
+                "beds": {
+                    "type": "integer"
+                },
+                "baths": {
+                    "type": "integer"
+                },
+                "squareMeters": {
+                    "type": "integer"
+                },
+                "provinces": {
+                    "type": "array",
+                    "description": "Array values can be 'Gode', 'Ruja', 'Jaby', 'Scavy', 'Groola' and 'Nova'.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "PostProperty": {
+            "type": "object",
+            "required": [
+                "title",
+                "description",
+                "price",
+                "x",
+                "y",
+                "beds",
+                "baths",
+                "squareMeters"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                },
+                "beds": {
+                    "type": "integer"
+                },
+                "baths": {
+                    "type": "integer"
+                },
+                "squareMeters": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
