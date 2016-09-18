@@ -26,7 +26,7 @@ O path da api é:  http://localhost:3001/v1
 
 ### Para executar testes de chamada na API:
 
-O servidor precisa estar rodando para os testes funcionarem.
+**IMPORTANTE:** O servidor precisa estar rodando para os testes funcionarem.
 
 ```
 npm run test
