@@ -1,6 +1,7 @@
 'use strict';
 
 const propertiesModel = require('../models/properties');
+const _ = require('lodash');
 
 module.exports.create = (req, res, next) => {
 
@@ -24,6 +25,13 @@ module.exports.create = (req, res, next) => {
 module.exports.get = (req, res, next) => {
 
     const id = parseInt(req.params.id);
+
+    if(!_.isInteger(id)) {
+        const error = new Error('Invalid id');
+        error.status = 400;
+        next(error);
+        return;
+    }
 
     propertiesModel.get(id).then(property => {
        

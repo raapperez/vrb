@@ -64,6 +64,28 @@ describe('vrb api', () => {
                     'squareMeters': 82
                 });
             });
+
+            it('Should get an error 404 when getting inexistent property', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties/99999999999999999999999`,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(404);
+                });
+            });
+
+            it('Should get an error 400 when getting invalid id', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties/invalid-id`,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
         });
 
         describe('GET /properties?ax={integer}&ay={integer}&bx={integer}&by={integer}', () => {
@@ -112,7 +134,7 @@ describe('vrb api', () => {
                         property.baths.should.be.a('number');
                         property.provinces.should.be.a('array');
                         property.squareMeters.should.be.a('number');
-                        
+
                         property.provinces.should.have.length(2);
                         property.provinces.should.contains('Gode');
                         property.provinces.should.contains('Ruja');
