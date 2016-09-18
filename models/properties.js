@@ -2,6 +2,7 @@
 
 const db = require('../services/memory-db');
 const _ = require('lodash');
+const provincesModel = require('./provinces');
 
 const isInvalid = property => {
     const x = property.long;
@@ -29,13 +30,33 @@ const isInvalid = property => {
     }
 
     return false;
-}
+};
 
 const get = id => {
-    return db.getProperty(id);
+    return db.getProperty(id).then(property => {
+        if(!property) {
+            return null;
+        }
+
+        property.provinces = provincesModel.getLocationProvinces(property.long, property.lat);
+        return property;
+    });
+};
+
+const create = property => {
+    return db.addProperty(property);
+};
+
+const list = (ax, ay, bx, by) => {
+    return db.getProprtiesInBox(ax, ay, bx, by).map(property => {
+        property.provinces = provincesModel.getLocationProvinces(property.long, property.lat);
+        return property;
+    });
+
 };
 
 
-
-
 module.exports.isInvalid = isInvalid;
+module.exports.get = get;
+module.exports.create = create;
+module.exports.list = list;
