@@ -5,7 +5,19 @@ const _ = require('lodash');
 const provincesModel = require('./provinces');
 
 const isInvalid = property => {
-    const {x, y, beds, baths, squareMeters} = property;
+    const {title, description, price, x, y, beds, baths, squareMeters} = property;
+
+    if(typeof title !== 'string') {
+        return 'Wrong title value';
+    }
+
+    if(typeof description !== 'string') {
+        return 'Wrong description value';
+    }
+
+    if (!_.isInteger(price) || price <= 0) {
+        return 'Wrong price value';
+    }
 
     if (!_.isInteger(x) || x < 0 || x > 1400) {
         return 'Wrong x value';
@@ -44,7 +56,16 @@ const get = id => {
 };
 
 const create = property => {
-    return db.addProperty(property);
+    return db.addProperty(property).then(property => {
+        if (!property) {
+            return null;
+        }
+
+        return provincesModel.getLocationProvinces(property.x, property.y).then(provinces => {
+            property.provinces = provinces.map(province => province.name);
+            return property;
+        });
+    });
 };
 
 const list = (ax, ay, bx, by) => {

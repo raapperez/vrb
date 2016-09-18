@@ -4,10 +4,13 @@ const chai = require('chai');
 const should = chai.should();
 const chaiAsPromised = require('chai-as-promised');
 const rp = require('request-promise');
+const _ = require('lodash');
 
 chai.use(chaiAsPromised);
 
 const host = 'http://localhost:3001';
+
+let createdProperty;
 
 describe('vrb api', () => {
     before(() => {
@@ -122,7 +125,7 @@ describe('vrb api', () => {
                     json: true
                 });
 
-                return promise.then(response => {                    
+                return promise.then(response => {
                     response.properties.forEach(property => {
                         property.id.should.be.a('number');
                         property.title.should.be.a('string');
@@ -272,23 +275,23 @@ describe('vrb api', () => {
                 });
             });
 
-            it('Should receive 400 error if invalid area', () => {
+            it('Should get an error 400 if invalid area', () => {
                 const promise = rp.get({
                     uri: `${host}/properties?ax=200&ay=499&bx=1500&by=0`,
                     json: true
                 });
-                
+
                 return promise.catch(err => {
                     err.statusCode.should.be.equal(400);
                 });
             });
 
-            it('Should receive 400 error if missing params', () => {
+            it('Should get an error 400 if missing params', () => {
                 const promise = rp.get({
                     uri: `${host}/properties?ax=200&bx=1500`,
                     json: true
                 });
-                
+
                 return promise.catch(err => {
                     err.statusCode.should.be.equal(400);
                 });
@@ -298,6 +301,223 @@ describe('vrb api', () => {
 
         describe('POST /properties', () => {
 
+            it('Should create a new property', () => {
+
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 790,
+                    'title': 'Apartamento modesto e bonito',
+                    'price': 340000,
+                    'description': 'Rodeado por parques e ciclovias, grande oportunidade para sua família!',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                return rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                }).then(property => {
+                    createdProperty = property;
+                    _.omit(property, 'id', 'provinces').should.be.deep.equal(propertyToInsert);
+                    property.provinces.should.have.length(1);
+                    property.provinces[0].should.be.equal('Gode');
+                });
+            });
+
+            it('Should be able to get the new created property', () => {
+                const promise = rp.get({
+                    uri: `${host}/properties/${createdProperty.id}`,
+                    json: true
+                });
+
+                return promise.should.eventually.be.deep.equal(createdProperty);
+            });
+
+            it('Should get an error 400 if invalid x', () => {
+                const propertyToInsert = {
+                    'x': 15000,
+                    'y': 790,
+                    'title': 'Apartamento modesto e bonito',
+                    'price': 340000,
+                    'description': 'Rodeado por parques e ciclovias, grande oportunidade para sua família!',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid y', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 1001,
+                    'title': 'Apartamento modesto e bonito',
+                    'price': 340000,
+                    'description': 'Rodeado por parques e ciclovias, grande oportunidade para sua família!',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid title', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': null,
+                    'price': 340000,
+                    'description': 'Rodeado por parques e ciclovias, grande oportunidade para sua família!',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid price', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': 'Title',
+                    'price': -323,
+                    'description': 'Rodeado por parques e ciclovias, grande oportunidade para sua família!',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid description', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': 'Title',
+                    'price': 900000,
+                    'description': 76,
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid beds', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': 'Title',
+                    'price': 900000,
+                    'description': 'Descriptions',
+                    'beds': 6,
+                    'baths': 1,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid baths', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': 'Title',
+                    'price': 900000,
+                    'description': 'Descriptions',
+                    'beds': 3,
+                    'baths': 0,
+                    'squareMeters': 58
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
+
+            it('Should get an error 400 if invalid squareMeters', () => {
+                const propertyToInsert = {
+                    'x': 160,
+                    'y': 600,
+                    'title': 'Title',
+                    'price': 900000,
+                    'description': 'Descriptions',
+                    'beds': 3,
+                    'baths': 1,
+                    'squareMeters': 10
+                };
+
+                const promise = rp.post({
+                    uri: `${host}/properties`,
+                    body: propertyToInsert,
+                    json: true
+                });
+
+                return promise.catch(err => {
+                    err.statusCode.should.be.equal(400);
+                });
+            });
         });
     });
 });
