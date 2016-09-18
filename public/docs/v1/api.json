@@ -96,20 +96,20 @@
                 }
             }
         },
-        "/properties/{propetyId}": {
+        "/properties/{propertyId}": {
             "get": {
                 "tags": [
                     "property"
                 ],
                 "summary": "Find property by Id",
-                "description": "Returns a single propety",
+                "description": "Returns a single property",
                 "operationId": "getProperty",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "propetyId",
+                        "name": "propertyId",
                         "in": "path",
                         "description": "Id of property to return",
                         "required": true,
