@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Viva Real Backend Test",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "author": "Rodrigo Perez",
   "license": "MIT",
@@ -14,6 +15,7 @@
     "lodash": "^4.15.0",
     "lodash-express": "0.0.3",
     "morgan": "~1.7.0",
+    "request": "^2.75.0",
     "request-promise": "^4.1.1",
     "serve-favicon": "~2.3.0",
     "winston": "^2.2.0"

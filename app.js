@@ -29,15 +29,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP' });
+});
+
 const indexRoute = require('./routes/index');
-app.use('/', indexRoute)
+app.use('/', indexRoute);
 
 const propertiesRoute = require('./routes/properties');
 app.use('/properties', propertiesRoute);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -48,7 +52,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use(function (err, req, res, next) {
     logger.error(err);
     res.status(err.status || 500);
     res.render('error', {
@@ -60,7 +64,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   logger.error(err);
   res.status(err.status || 500);
   res.render('error', {

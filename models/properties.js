@@ -5,7 +5,7 @@ const _ = require('lodash');
 const provincesModel = require('./provinces');
 
 const isInvalid = property => {
-    const {x, y, beds, baths, area} = property;
+    const {x, y, beds, baths, squareMeters} = property;
 
     if (!_.isInteger(x) || x < 0 || x > 1400) {
         return 'Wrong x value';
@@ -23,8 +23,8 @@ const isInvalid = property => {
         return 'Wrong baths value';
     }
 
-    if (!_.isInteger(area) || area < 20 || area > 240) {
-        return 'Wrong area value';
+    if (!_.isInteger(squareMeters) || squareMeters < 20 || squareMeters > 240) {
+        return 'Wrong squareMeters value';
     }
 
     return false;
